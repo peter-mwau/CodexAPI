@@ -1,5 +1,5 @@
 import requests
-import gradio
+import gradio as gr
 
 # def codex(value):
 #     url = 'https://api.codex.jaagrav.in/execute'
@@ -23,24 +23,30 @@ import gradio
 # demo.launch()
 
 
-def CodexAPI():
-    value = int(input("Enter value: "))
+
+def CodexAPI(value):
     data = {
-    'code': f'val = {value}  + 5\nprint(val)',
-    'language': 'py',
-    'input': ''
-}
+        'code': f'val = {value} + 5\nprint(val)',
+        'language': 'py',
+        'input': ''
+    }
 
     headers = {
-    'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded'
     }
 
     response = requests.post('https://api.codex.jaagrav.in', headers=headers, data=data)
 
     if response.ok:
-        print(response.json())
+        result = response.json()
     else:
-        print(response.text)
+        result = response.text
+    
+    return result
 
-CodexAPI()  
+input_text = gr.inputs.Number(label="Enter a value")
+output_text = gr.outputs.Textbox(label="Result")
+
+gr.Interface(fn=CodexAPI, inputs=input_text, outputs=output_text, title="CodexAPI with Gradio").launch(share=True)
+
 
